@@ -1,51 +1,36 @@
-import { CheckIcon } from "@/shared/ui/icons";
-import clsx from "clsx";
+import { $errorNumber, errorNumberEvent } from "@/entities/error-number";
+import { useStore } from "effector-react";
 import { useState } from "react";
+import TelephoneCheck from "./telephone-check.tsx";
+import { $disabled, disabledEvent } from "@/entities/disabled";
+import clsx from "clsx";
 
-const TelephoneController = ({
-  setIsDisabled,
-  isDisabled,
-  value,
-  setIsErrorPhoneNumber,
-  IsErrorPhoneNumber,
-}: {
-  setIsDisabled: (value: boolean) => void;
-  isDisabled: boolean;
-  value: string;
-  setIsErrorPhoneNumber: (value: boolean) => void;
-  IsErrorPhoneNumber: boolean;
-}) => {
+const TelephoneController = ({ value }: { value: string }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const isErrorNumber = useStore($errorNumber);
+  const isDisabled = useStore($disabled);
   const hasRepeatedDigits = /(.)\1{6,}/.test(value);
-  const check = () => {
-    setIsVisible(!isVisible);
-  };
   const submit = () => {
-    if (value.length >= 10) setIsDisabled(true);
+    if (value.length >= 10) disabledEvent(true);
     if (hasRepeatedDigits) {
-      setIsErrorPhoneNumber(true);
+      errorNumberEvent(true);
     } else {
-      setIsErrorPhoneNumber(false);
+      errorNumberEvent(false);
     }
   };
   return (
     <div className="mt-[33px] w-full flex flex-col items-center">
-      <div className="flex items-center">
-        {IsErrorPhoneNumber && <p>Неверный номер</p>}
-        <div
-          onClick={() => check()}
-          className="w-[40px] h-[40px] border-[2px] border-black flex items-center "
-        >
-          {isVisible && <CheckIcon />}
-        </div>
-        <p className="w-[190px]  text-center  text-textSecondaryColor text-14px font-normal">
-          Согласие на обработку персональных данных
+      {isErrorNumber === true ? (
+        <p className="text-14px text-errorColor uppercase font-medium">
+          Неверно введён номер
         </p>
-      </div>
+      ) : (
+        <TelephoneCheck isVisible={isVisible} setIsVisible={setIsVisible} />
+      )}
       <button
         onClick={submit}
         className={clsx(
-          "bg-transparent mt-[25px] px-[45px] py-[12px] border-[2px] outline-none border-borderColor cursor-not-allowed text-16px",
+          "bg-transparent mt-[25px] px-[45px] py-[12px] border-[2px] outline-none border-borderColor cursor-not-allowed text-16px font-medium text-borderColor",
           isDisabled &&
             isVisible &&
             "cursor-pointer hover:bg-black hover:text-white hover:border-none hover:text-16px"

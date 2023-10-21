@@ -4,16 +4,18 @@ import { TelephoneCell } from "@/features/telephone-cell/ui";
 import { TelephoneCells } from "../lib/telephone-cells";
 import { TelephoneController } from "@/features/telephon-controller/ui";
 import clsx from "clsx";
+import { useStore } from "effector-react";
+import { $errorNumber } from "@/entities/error-number";
+import { disabledEvent } from "@/entities/disabled";
 const Telephone = () => {
   const [value, setValue] = useState<string>("");
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isErrorPhoneNumber, setIsErrorPhoneNumber] = useState(false);
+  const isErrorNumber = useStore($errorNumber);
   const onBackspace = () => {
     setValue(value.slice(0, -1));
-    setIsDisabled(false);
+    disabledEvent(false);
   };
   useEffect(() => {
-    if (value.length >= 10) setIsDisabled(true);
+    if (value.length >= 10) disabledEvent(true);
   }, [value]);
   return (
     <div className="bg-mainBG flex flex-col items-center w-[380px] h-[720px] ">
@@ -31,7 +33,7 @@ const Telephone = () => {
         placeholder="+7(___)___-__-__"
         className={clsx(
           "w-full text-center z-20 bg-transparent text-32px font-bold text-black outline-none placeholder:text-black placeholder:text-32px placeholder:font-bold",
-          isErrorPhoneNumber && "text-errorColor"
+          isErrorNumber && "text-errorColor"
         )}
       />
       <p className="text-14px text-black w-[315px] text-center">
@@ -56,13 +58,7 @@ const Telephone = () => {
           Стереть
         </button>
       </div>
-      <TelephoneController
-        isDisabled={isDisabled}
-        setIsDisabled={setIsDisabled}
-        value={value}
-        setIsErrorPhoneNumber={setIsErrorPhoneNumber}
-        IsErrorPhoneNumber={isErrorPhoneNumber}
-      />
+      <TelephoneController value={value} />
     </div>
   );
 };
