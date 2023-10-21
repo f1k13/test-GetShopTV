@@ -1,15 +1,28 @@
 import { Telephone } from "@/widgets/telephone/lib/telephone-cells";
 import clsx from "clsx";
 
-const TelephoneCell = ({ item, index }: { item: Telephone; index: number }) => {
+const TelephoneCell = ({
+  item,
+  value,
+  setValue,
+}: {
+  item: Telephone;
+  index: number;
+  value: string;
+  setValue: (value: string) => void;
+}) => {
+  const onKeyPress = (key: number) => {
+    setValue(String([...value, key, ...value.slice(key, key)]));
+  };
+  
   return (
     <div
+      onClick={() => onKeyPress(item.cell)}
       className={clsx(
-        item.cell === 0 && "text-end",
-        " border-[2px] border-black px-[30px] py-[12px]"
+        "border-[2px] border-black px-[30px] py-[12px] flex items-center gap-[10px]"
       )}
     >
-      <p>{item.cell}</p>
+      {item.cell}
     </div>
   );
 };

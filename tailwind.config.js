@@ -13,6 +13,7 @@ module.exports = {
         black: "#000",
       },
       fontSize: {
+        "14px": "14px",
         "26px": "26px",
         "32px": "32px",
       },
