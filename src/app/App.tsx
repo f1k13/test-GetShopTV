@@ -4,7 +4,7 @@ import AppRouter from "./app-router";
 
 const App = () => {
   return (
-    <div className="w-full h-screen flex justify-center items-center">
+    <div className="w-[1280px] h-screen">
       <BrowserRouter>
         <AppRouter />
       </BrowserRouter>
